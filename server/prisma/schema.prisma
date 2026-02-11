@@ -13,21 +13,30 @@ datasource db {
 }
 
 model Project {
-  id           String     @id @default(uuid())
-  name         String     @unique
-  technicianId String
-  technician   Technician @relation(fields: [technicianId], references: [technicianId])
-  description  String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id               Int      @id @default(autoincrement())
+  name             String   @unique
+  projectManagerId Int
+  projectManager   User     @relation("ProjectManager", fields: [projectManagerId], references: [id])
+  technicianId     Int
+  technician       User     @relation("Technician", fields: [technicianId], references: [id])
+  description      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
-model Technician {
-  technicianId String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  projects Project[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  email              String    @unique
+  password           String
+  type               UserType
+  managedProjects    Project[] @relation("ProjectManager")
+  technicianProjects Project[] @relation("Technician")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+enum UserType {
+  project_manager
+  technician
 }
