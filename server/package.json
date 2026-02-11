@@ -7,8 +7,10 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
+    "@prisma/client": "^7.4.0",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "prisma": "^7.4.0"
   }
 }
