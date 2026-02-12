@@ -5,10 +5,27 @@ const getAllProjects = (req, res) => {
     res.send('getAllProjects');
 }
 
-const createProject = (req, res) => {
+const createProject = async (req, res) => {
 
+    const {name, projectManagerId, technicianId} = req.body;
 
-    res.send('create project');
+    if (!name || !projectManagerId || !technicianId) {
+        res.status(400).json({msg: 'Please send all parameters'});
+    }
+
+    const project = await prisma.project.create({
+        data: {
+            name: name,
+            projectManagerId: projectManagerId,
+            technicianId: technicianId
+        }
+    })
+
+    if (!project) {
+        res.status(400).json({msg: 'Project could not be created'});
+    }
+    
+    res.status(200).json({project});
 }
 
 module.exports = {

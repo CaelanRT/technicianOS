@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
     res.send('<h1>hello world</h1>');
 })
 
-app.use('/api/v1/projects', router);
+app.use('/api/v1', router);
 
 app.listen(port, () => {
     console.log('server is listening on port 3000...');
