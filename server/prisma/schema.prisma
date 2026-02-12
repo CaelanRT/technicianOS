@@ -1,27 +1,13 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "sqlite"
-}
-
-model Project {
-  id               Int      @id @default(autoincrement())
-  name             String   @unique
-  projectManagerId Int
-  projectManager   User     @relation("ProjectManager", fields: [projectManagerId], references: [id])
-  technicianId     Int
-  technician       User     @relation("Technician", fields: [technicianId], references: [id])
-  description      String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
 }
 
 model User {
@@ -33,9 +19,19 @@ model User {
   managedProjects    Project[] @relation("ProjectManager")
   technicianProjects Project[] @relation("Technician")
   createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  updatedAt         DateTime  @updatedAt
 }
 
+model Project {
+  id               Int      @id @default(autoincrement())
+  name             String
+  projectManagerId Int
+  projectManager   User     @relation("ProjectManager", fields: [projectManagerId], references: [id])
+  technicianId     Int
+  technician       User     @relation("Technician", fields: [technicianId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 enum UserType {
   project_manager
   technician
