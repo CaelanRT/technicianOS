@@ -1,4 +1,5 @@
 const {prisma} = require('../db/db');
+const hashPassword = require('../utils/hashPass');
 
 // get all users
 const getAllUsers = async (req, res) => {
@@ -18,11 +19,13 @@ const registerUser = async (req, res) => {
         res.status(400).json({msg: 'Missing parameters, please send all parameters.'});
     }
 
+    const hashedPassword = await hashPassword(password);
+
     const user = await prisma.user.create({
         data: {
             name: name,
             email: email,
-            password: password,
+            password: hashedPassword,
             type: type
         }
     })
