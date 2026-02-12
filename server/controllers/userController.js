@@ -1,8 +1,15 @@
 const {prisma} = require('../db/db');
 
 // get all users
-const getAllUsers = (req, res) => {
-    res.send('get all users');
+const getAllUsers = async (req, res) => {
+    
+    const users = await prisma.user.findMany();
+
+    if (!users) {
+        res.status(400).json({msg: 'No users in database'});
+    }
+
+    res.status(200).json({users});
 }
 // register user
 const registerUser = async (req, res) => {

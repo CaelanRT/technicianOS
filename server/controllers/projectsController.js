@@ -1,8 +1,14 @@
 const { prisma } = require('../db/db')
 
 // get all tasks
-const getAllProjects = (req, res) => {
-    res.send('getAllProjects');
+const getAllProjects = async (req, res) => {
+    const projects = await prisma.project.findMany();
+
+    if (!projects) {
+        res.status(400).json({msg: 'No projects in database'});
+    }
+
+    res.status(200).json({projects});
 }
 
 const createProject = async (req, res) => {
