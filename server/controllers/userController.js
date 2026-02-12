@@ -1,5 +1,5 @@
 const {prisma} = require('../db/db');
-const hashPassword = require('../utils/hashPass');
+const {hashPassword, comparePassword} = require('../utils/hashPass');
 
 // get all users
 const getAllUsers = async (req, res) => {
@@ -12,6 +12,38 @@ const getAllUsers = async (req, res) => {
 
     res.status(200).json({users});
 }
+
+const loginUser = async (req, res) => {
+    const {email, password} = req.body;
+
+    if (!email || !password) {
+        res.status(400).json({msg: 'Missing parameters, please send all parameters.'});
+    }
+
+    // find user and check
+    const user = await prisma.user.findUnique({
+        where: {
+            email: email
+        }
+    })
+
+    if (!user) {
+        res.status(400).json({msg: 'No user found.'});
+    }
+
+    // get password and check against hash
+    const match = await comparePassword(password, user.password);
+
+    if (!match) {
+        res.status(400).json({msg:'Invalid password'});
+    }
+
+    // need to add JWT!!
+
+    res.status(200).json({user});
+    
+}
+
 // register user
 const registerUser = async (req, res) => {
     const {name, email, password, type} = req.body;
@@ -34,10 +66,13 @@ const registerUser = async (req, res) => {
         res.status(400).json({msg:'Error creating user'})
     }
 
+    // need to add JWT!!
+
     res.status(200).json({user});
 }
 
 module.exports = {
     getAllUsers,
-    registerUser
+    registerUser,
+    loginUser
 }
