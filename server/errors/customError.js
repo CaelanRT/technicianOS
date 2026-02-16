@@ -1,4 +1,4 @@
-const {statusCodes} = require('http-status-codes');
+const { StatusCodes } = require('http-status-codes');
 
 class CustomError extends Error {
     constructor(message) {
@@ -9,7 +9,7 @@ class CustomError extends Error {
 class NotFoundError extends CustomError {
     constructor(message) {
         super(message);
-        this.statusCode = statusCodes.NOT_FOUND;
+        this.statusCode = StatusCodes.NOT_FOUND;
     }
 }
 
@@ -17,14 +17,14 @@ class NotFoundError extends CustomError {
 class BadRequestError extends CustomError {
     constructor(message) {
         super(message);
-        this.statusCode = statusCodes.BAD_REQUEST;
+        this.statusCode = StatusCodes.BAD_REQUEST;
     }
 }
 
 class UnauthenticatedError extends CustomError {
     constructor(message) {
         super(message);
-        this.statusCode = statusCodes.UNAUTHORIZED;
+        this.statusCode = StatusCodes.UNAUTHORIZED;
     }
 }
 

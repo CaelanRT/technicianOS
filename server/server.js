@@ -14,14 +14,15 @@ const router = require('./routes/projectsRoutes');
 
 const port = 3000 || process.env.PORT;
 
-
+//routes
 app.get('/', (req, res) => {
     res.send('<h1>hello world</h1>');
 })
 
-app.use(errorHandler);
-
 app.use('/api/v1', router);
+
+// errors
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log('server is listening on port 3000...');

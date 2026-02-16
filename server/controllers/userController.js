@@ -1,5 +1,6 @@
 const {prisma} = require('../db/db');
 const {hashPassword, comparePassword} = require('../utils/hashPass');
+const {NotFoundError, UnauthenticatedError, BadRequestError} = require('../errors/customError');
 
 // get all users
 const getAllUsers = async (req, res) => {
@@ -7,7 +8,7 @@ const getAllUsers = async (req, res) => {
     const users = await prisma.user.findMany();
 
     if (!users) {
-        res.status(400).json({msg: 'No users in database'});
+        throw new NotFoundError('No users in database');
     }
 
     res.status(200).json({users});
@@ -17,7 +18,7 @@ const loginUser = async (req, res) => {
     const {email, password} = req.body;
 
     if (!email || !password) {
-        res.status(400).json({msg: 'Missing parameters, please send all parameters.'});
+        throw new BadRequestError('Missing Credentials.');
     }
 
     // find user and check
@@ -28,14 +29,14 @@ const loginUser = async (req, res) => {
     })
 
     if (!user) {
-        res.status(400).json({msg: 'No user found.'});
+        throw new NotFoundError('Invalid Credentials');
     }
 
     // get password and check against hash
     const match = await comparePassword(password, user.password);
 
     if (!match) {
-        res.status(400).json({msg:'Invalid password'});
+        throw new UnauthenticatedError('Invalid password');
     }
 
     // need to add JWT!!
@@ -48,7 +49,7 @@ const loginUser = async (req, res) => {
 const registerUser = async (req, res) => {
     const {name, email, password, type} = req.body;
     if (!name || !email || !password || !type) {
-        res.status(400).json({msg: 'Missing parameters, please send all parameters.'});
+        throw new BadRequestError('Missing Credentials.');
     }
 
     const hashedPassword = await hashPassword(password);
@@ -63,7 +64,7 @@ const registerUser = async (req, res) => {
     })
 
     if (!user) {
-        res.status(400).json({msg:'Error creating user'})
+        throw new BadRequestError('Error creating user. Please try again.');
     }
 
     // need to add JWT!!
