@@ -1,6 +1,7 @@
 const {prisma} = require('../db/db');
 const {hashPassword, comparePassword} = require('../utils/hashPass');
 const {NotFoundError, UnauthenticatedError, BadRequestError} = require('../errors/customError');
+const createJWT = require('../utils/jwt');
 
 // get all users
 const getAllUsers = async (req, res) => {
@@ -28,6 +29,7 @@ const loginUser = async (req, res) => {
         }
     })
 
+    // if no user, throw error
     if (!user) {
         throw new NotFoundError('Invalid Credentials');
     }
@@ -39,9 +41,11 @@ const loginUser = async (req, res) => {
         throw new UnauthenticatedError('Invalid password');
     }
 
+    const token = createJWT(user);
+
     // need to add JWT!!
 
-    res.status(200).json({user});
+    res.status(200).json({user, token});
     
 }
 
@@ -68,8 +72,9 @@ const registerUser = async (req, res) => {
     }
 
     // need to add JWT!!
+    const token = createJWT(user);
 
-    res.status(200).json({user});
+    res.status(200).json({user, token});
 }
 
 module.exports = {
