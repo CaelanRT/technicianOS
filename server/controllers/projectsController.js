@@ -1,6 +1,6 @@
 const { STATUS_CODES } = require('node:http');
 const { prisma } = require('../db/db');
-const {BadRequestError} = require('../errors/customError');
+const {BadRequestError, NotFoundError} = require('../errors/customError');
 const {StatusCodes} = require('http-status-codes');
 
 // get all Projects
@@ -8,7 +8,7 @@ const getAllProjects = async (req, res) => {
     const projects = await prisma.project.findMany();
 
     if (!projects) {
-        throw new BadRequestError('No Projects in database.')
+        throw new NotFoundError('No Projects in database.')
     }
 
     res.status(StatusCodes.OK).json({projects});
@@ -35,7 +35,7 @@ const getSingleProject = async (req, res) => {
     })
 
     if (!project) {
-        throw new BadRequestError(`No Project with ID ${id}`);
+        throw new NotFoundError(`No Project with ID ${id}`);
     }
 
     res.status(StatusCodes.OK).json({project});
@@ -67,6 +67,13 @@ const createProject = async (req, res) => {
 
 // update project
 const updateProject = (req, res) => {
+    const {name, projectManagerId, technicianId} = req.body;
+
+    if (!name || !projectManagerId || !technicianId) {
+        throw new BadRequestError('Missing arguments');
+    }
+    
+    
     res.status(StatusCodes.OK).json({msg:'updateProject'});
 }
 
@@ -91,10 +98,6 @@ const deleteProject = async (req, res) => {
             id: id
         }
     })
-
-    if (!project) {
-        throw new BadRequestError('No project with that ID');
-    }
 
     res.status(StatusCodes.OK).json({project});
 }

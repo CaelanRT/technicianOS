@@ -7,6 +7,11 @@ const errorHandler = (err, req, res, next) => {
         msg: err.message || 'Something went wrong, please try again'
     }
 
+    if (err.code === "P2025") {
+        customError.statusCode = StatusCodes.NOT_FOUND;
+        customError.msg = 'No project with that ID.';
+    }
+
     return res.status(customError.statusCode).json({msg: customError.msg});
 
 }
