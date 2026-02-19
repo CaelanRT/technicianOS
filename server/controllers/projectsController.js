@@ -50,6 +50,8 @@ const createProject = async (req, res) => {
         throw new BadRequestError('Missing parameters.')
     }
 
+    // check for ints for ids!
+
     const project = await prisma.project.create({
         data: {
             name: name,
@@ -66,15 +68,39 @@ const createProject = async (req, res) => {
 }
 
 // update project
-const updateProject = (req, res) => {
+const updateProject = async (req, res) => {
     const {name, projectManagerId, technicianId} = req.body;
 
     if (!name || !projectManagerId || !technicianId) {
         throw new BadRequestError('Missing arguments');
     }
+
+    // check for ints for ids!
+
+    let id = req.params.id;
+
+    if (!id) {
+        throw new BadRequestError('Missing ID. Please send with an ID');
+    }
+
+    id = Number.parseInt(id);
+
+    if (Number.isNaN(id)) {
+        throw new BadRequestError('Invalid ID. Please send an integer value.')
+    }
+
+    const project = await prisma.project.update({
+        where: {
+            id: id
+        },
+        data: {
+            name: name,
+            projectManagerId: projectManagerId,
+            technicianId: technicianId
+        }
+    })
     
-    
-    res.status(StatusCodes.OK).json({msg:'updateProject'});
+    res.status(StatusCodes.OK).json({project});
 }
 
 // delete project
@@ -90,8 +116,6 @@ const deleteProject = async (req, res) => {
     if (Number.isNaN(id)) {
         throw new BadRequestError('Invalid ID. Please send an integer value.');
     }
-
-    // may need to check if the project is in the DB first then delete it
 
     const project = await prisma.project.delete({
         where : {

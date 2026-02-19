@@ -12,6 +12,10 @@ const errorHandler = (err, req, res, next) => {
         customError.msg = 'No project with that ID.';
     }
 
+    console.log(err);
+    
+    
+
     return res.status(customError.statusCode).json({msg: customError.msg});
 
 }
