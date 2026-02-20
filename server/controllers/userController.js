@@ -17,7 +17,31 @@ const getAllUsers = async (req, res) => {
 }
 
 // get single user
+const getSingleUser = async (req, res) => {
+    let id = req.params.id;
 
+    if (!id) {
+        throw new BadRequestError('Missing Credentials');
+    }
+
+    id = Number.parseInt(id);
+
+    if (Number.isNaN(id)) {
+        throw new BadRequestError('Invalid ID. Please send a valid integer value');
+    }
+
+    const user = await prisma.user.findUnique({
+        where :{
+            id: id
+        }
+    })
+
+    if (!user) {
+        throw new NotFoundError(`No user found with id ${id}`);
+    }
+
+    res.status(StatusCodes.OK).json({user});
+}
 
 const loginUser = async (req, res) => {
     const {email, password} = req.body;
@@ -93,6 +117,7 @@ const logout = (req, res) => {
 
 module.exports = {
     getAllUsers,
+    getSingleUser,
     registerUser,
     loginUser,
     logout

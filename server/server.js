@@ -18,7 +18,7 @@ const port = 3000 || process.env.PORT;
 
 //routes
 app.get('/', (req, res) => {
-    res.send('<h1>hello world</h1>');
+    res.send('<h1>TechnicianOS</h1>');
 })
 
 app.use('/api/v1', router);
