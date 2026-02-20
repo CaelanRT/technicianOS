@@ -99,10 +99,14 @@ const registerUser = async (req, res) => {
         throw new BadRequestError('Error creating user. Please try again.');
     }
 
-    // need to add JWT!!
-    const token = createJWT(user);
+    const tokenUser = createTokenUser(user);
 
-    res.status(StatusCodes.CREATED).json({user, token});
+    attachCookiesToRequest(res, tokenUser);
+
+    // need to add JWT!!
+    //const token = createJWT(user);
+
+    res.status(StatusCodes.CREATED).json({user, msg: 'User Registered Successfully.'});
 }
 
 // logout user
