@@ -64,7 +64,7 @@ const createProject = async (req, res) => {
         throw new BadRequestError('Project could not be created');
     }
     
-    res.status(StatusCodes.OK).json({project});
+    res.status(StatusCodes.CREATED).json({project});
 }
 
 // update project
@@ -123,6 +123,7 @@ const deleteProject = async (req, res) => {
         }
     })
 
+    // set this to a 204 and don't send a payload for production
     res.status(StatusCodes.OK).json({project});
 }
 

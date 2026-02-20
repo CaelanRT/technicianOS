@@ -1,14 +1,37 @@
 const jwt = require('jsonwebtoken');
 
-const createJWT = function (user) {
-    return jwt.sign({
+const createTokenUser = (user) => {
+    return tokenUser = {
         UserId: user.UserId,
         name: user.name
-    },process.env.JWT_SECRET,
-    {
-        expiresIn: process.env.JWT_LIFETIME
     }
-    )
 }
 
-module.exports = createJWT;
+const createJWT = function (tokenUser) {
+
+    return jwt.sign(tokenUser, process.env.JWT_SECRET,
+        {
+        expiresIn: process.env.JWT_LIFETIME
+        });
+}
+
+const attachCookiesToRequest = (res, tokenUser) => {
+    const token = createJWT(tokenUser);
+
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    return res.cookie('token', token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + oneDay),
+        secure: process.env.NODE_ENV === 'production',
+        signed: true
+    })
+
+
+}
+
+module.exports = {
+    createTokenUser,
+    createJWT,
+    attachCookiesToRequest
+};

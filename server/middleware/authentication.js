@@ -2,13 +2,11 @@ const jwt = require('jsonwebtoken');
 const {UnauthenticatedError} = require('../errors/customError');
 
 const authenticateUser = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+    const token = req.signedCookies.token;
 
-    if (!authHeader || !authHeader.startsWith('Bearer')) {
+    if (!token) {
         throw new UnauthenticatedError('Authentication Invalid');
     }
-
-    const token = authHeader.split(' ')[1];
 
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);

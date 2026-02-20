@@ -1,7 +1,8 @@
 const {prisma} = require('../db/db');
 const {hashPassword, comparePassword} = require('../utils/hashPass');
 const {NotFoundError, UnauthenticatedError, BadRequestError} = require('../errors/customError');
-const createJWT = require('../utils/jwt');
+const {createJWT, createTokenUser, attachCookiesToRequest} = require('../utils/jwt');
+const {StatusCodes} = require('http-status-codes')
 
 // get all users
 const getAllUsers = async (req, res) => {
@@ -12,8 +13,11 @@ const getAllUsers = async (req, res) => {
         throw new NotFoundError('No users in database');
     }
 
-    res.status(200).json({users});
+    res.status(StatusCodes.OK).json({users});
 }
+
+// get single user
+
 
 const loginUser = async (req, res) => {
     const {email, password} = req.body;
@@ -41,11 +45,11 @@ const loginUser = async (req, res) => {
         throw new UnauthenticatedError('Invalid password');
     }
 
-    const token = createJWT(user);
+    const tokenUser = createTokenUser(user);
 
-    // need to add JWT!!
+    attachCookiesToRequest(res, tokenUser);
 
-    res.status(200).json({user, token});
+    res.status(StatusCodes.OK).json({user});
     
 }
 
@@ -74,11 +78,22 @@ const registerUser = async (req, res) => {
     // need to add JWT!!
     const token = createJWT(user);
 
-    res.status(200).json({user, token});
+    res.status(StatusCodes.CREATED).json({user, token});
+}
+
+// logout user
+const logout = (req, res) => {
+    res.cookie('token', 'logout', {
+        httpOnly: true,
+        expires: new Date(Date.now())
+    })
+
+    res.status(StatusCodes.OK).json({msg: 'Successfully logged out'});
 }
 
 module.exports = {
     getAllUsers,
     registerUser,
-    loginUser
+    loginUser,
+    logout
 }
