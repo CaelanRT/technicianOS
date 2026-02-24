@@ -2,9 +2,15 @@ const {BadRequestError, NotFoundError, UnauthenticatedError} = require('../error
 const {StatusCodes} = require('http-status-codes');
 
 const errorHandler = (err, req, res, next) => {
+
     let customError = {
         statusCode: err.statusCode || 500,
         msg: err.message || 'Something went wrong, please try again'
+    }
+
+    if(err.code === "P2003") {
+        customError.statusCode = StatusCodes.BAD_REQUEST,
+        customError.msg = 'Invalid parameters in the payload. Please check the values being sent are present in the DB.'
     }
 
     if (err.code === "P2025") {
