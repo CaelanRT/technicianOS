@@ -43,6 +43,7 @@ const getSingleUser = async (req, res) => {
     res.status(StatusCodes.OK).json({user});
 }
 
+// login user
 const loginUser = async (req, res) => {
     const {email, password} = req.body;
 
@@ -79,8 +80,10 @@ const loginUser = async (req, res) => {
 
 // register user
 const registerUser = async (req, res) => {
-    const {name, email, password, type} = req.body;
-    if (!name || !email || !password || !type) {
+    const {name, email, password, role, organizationId} = req.body;
+    if (!name || !email || !password || !role || !organizationId) {
+        console.log('throwing here');
+        
         throw new BadRequestError('Missing Credentials.');
     }
 
@@ -91,7 +94,8 @@ const registerUser = async (req, res) => {
             name: name,
             email: email,
             password: hashedPassword,
-            type: type
+            role: role,
+            organizationId: organizationId
         }
     })
 
@@ -103,11 +107,13 @@ const registerUser = async (req, res) => {
 
     attachCookiesToRequest(res, tokenUser);
 
-    // need to add JWT!!
-    //const token = createJWT(user);
 
     res.status(StatusCodes.CREATED).json({user, msg: 'User Registered Successfully.'});
 }
+
+// edit user
+
+// edit user password - need to rehash!
 
 // logout user
 const logout = (req, res) => {

@@ -10,29 +10,75 @@ datasource db {
   provider = "sqlite"
 }
 
-model User {
-  id                 Int       @id @default(autoincrement())
-  name               String
-  email              String    @unique
-  password           String
-  type               UserType
-  managedProjects    Project[] @relation("ProjectManager")
-  technicianProjects Project[] @relation("Technician")
-  createdAt          DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-}
-
-model Project {
-  id               Int      @id @default(autoincrement())
-  name             String
-  projectManagerId Int
-  projectManager   User     @relation("ProjectManager", fields: [projectManagerId], references: [id])
-  technicianId     Int
-  technician       User     @relation("Technician", fields: [technicianId], references: [id])
+model Organization {
+  id        Int      @id @default(autoincrement())
+  name      String
+  users     User[]
+  projects  Project[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-enum UserType {
+
+model User {
+  id             Int          @id @default(autoincrement())
+  name           String
+  email          String       @unique
+  password       String
+  role           UserRole
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  managedProjects    Project[] @relation("ProjectManager")
+  technicianProjects Project[] @relation("Technician")
+
+  assignedTasks      Task[]    @relation("TaskAssignee")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Project {
+  id              Int          @id @default(autoincrement())
+  name            String
+  organizationId  Int
+  organization    Organization @relation(fields: [organizationId], references: [id])
+
+  projectManagerId Int
+  projectManager   User @relation("ProjectManager", fields: [projectManagerId], references: [id])
+
+  technicianId Int
+  technician   User @relation("Technician", fields: [technicianId], references: [id])
+
+  tasks      Task[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+
+  projectId   Int
+  project     Project    @relation(fields: [projectId], references: [id])
+
+  status      TaskStatus @default(pending)
+
+  assignedToUserId Int?
+  assignedToUser   User? @relation("TaskAssignee", fields: [assignedToUserId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum TaskStatus {
+  pending
+  in_progress
+  completed
+}
+
+enum UserRole {
   project_manager
   technician
 }

@@ -1,4 +1,3 @@
-const { STATUS_CODES } = require('node:http');
 const { prisma } = require('../db/db');
 const {BadRequestError, NotFoundError} = require('../errors/customError');
 const {StatusCodes} = require('http-status-codes');
