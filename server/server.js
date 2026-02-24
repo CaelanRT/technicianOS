@@ -14,7 +14,7 @@ app.use(cookieParser(process.env.JWT_SECRET));
 
 const router = require('./routes/projectsRoutes');
 
-const port = 3000 || process.env.PORT;
+const port = process.env.PORT || 3000;
 
 //routes
 app.get('/', (req, res) => {
@@ -29,4 +29,3 @@ app.use(errorHandler);
 app.listen(port, () => {
     console.log('server is listening on port 3000...');
 })
-
