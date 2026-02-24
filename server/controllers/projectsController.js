@@ -43,17 +43,16 @@ const getSingleProject = async (req, res) => {
 // create project
 const createProject = async (req, res) => {
 
-    const {name, projectManagerId, technicianId} = req.body;
+    const {name, organizationId,projectManagerId, technicianId} = req.body;
 
-    if (!name || !projectManagerId || !technicianId) {
+    if (!name || !organizationId || !projectManagerId || !technicianId) {
         throw new BadRequestError('Missing parameters.')
     }
-
-    // check for ints for ids!
 
     const project = await prisma.project.create({
         data: {
             name: name,
+            organizationId: organizationId,
             projectManagerId: projectManagerId,
             technicianId: technicianId
         }
@@ -68,9 +67,9 @@ const createProject = async (req, res) => {
 
 // update project
 const updateProject = async (req, res) => {
-    const {name, projectManagerId, technicianId} = req.body;
+    const {name, organizationId, projectManagerId, technicianId} = req.body;
 
-    if (!name || !projectManagerId || !technicianId) {
+    if (!name || !organizationId || !projectManagerId || !technicianId) {
         throw new BadRequestError('Missing arguments');
     }
 
@@ -94,6 +93,7 @@ const updateProject = async (req, res) => {
         },
         data: {
             name: name,
+            organizationId: organizationId,
             projectManagerId: projectManagerId,
             technicianId: technicianId
         }
