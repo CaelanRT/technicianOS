@@ -59,9 +59,9 @@ const createOrg = async (req, res) => {
 
 // update org
 const updateOrg = async (req, res) => {
-    const name = req.body;
+    const name = req.body.name;
 
-    if (!body) {
+    if (!name) {
         throw new BadRequestError('Invalid request. Please send with a name');
     }
 
@@ -90,11 +90,35 @@ const updateOrg = async (req, res) => {
 }
 
 // delete org
+const deleteOrg = async (req, res) => {
+    let orgId = req.params.id;
+
+    if (!orgId) {
+        throw new BadRequestError('Invalid request. Please add an ID.')
+    }
+
+    orgId = Number.parseInt(orgId);
+
+    if (Number.isNaN(orgId)) {
+        throw new BadRequestError('Invalid request. Please enter an integer value for ID');
+    }
+
+    const organization = await prisma.organization.delete({
+        where: {
+            id: orgId
+        }
+    })
+
+
+    res.status(StatusCodes.OK).json({organization});
+}
+
 
 //export
 module.exports = {
     getSingleOrg,
     getAllOrgs,
     createOrg,
-    updateOrg
+    updateOrg,
+    deleteOrg
 }

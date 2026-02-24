@@ -82,7 +82,6 @@ const loginUser = async (req, res) => {
 const registerUser = async (req, res) => {
     const {name, email, password, role, organizationId} = req.body;
     if (!name || !email || !password || !role || !organizationId) {
-        console.log('throwing here');
         
         throw new BadRequestError('Missing Credentials.');
     }
