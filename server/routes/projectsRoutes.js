@@ -15,8 +15,8 @@ router.route('/users').get(authenticateUser, getAllUsers);
 router.route('/users/:id').get(authenticateUser, getSingleUser);
 
 // organizations
-router.route('/organizations').post(createOrg).get(getAllOrgs);
-router.route('/organizations/:id').get(getSingleOrg).patch(updateOrg).delete(deleteOrg);
+router.route('/organizations').post(authenticateUser, createOrg).get(authenticateUser, getAllOrgs);
+router.route('/organizations/:id').get(authenticateUser, getSingleOrg).patch(authenticateUser, updateOrg).delete(authenticateUser, deleteOrg);
 
 // auth
 router.route('/register').post(registerUser);
