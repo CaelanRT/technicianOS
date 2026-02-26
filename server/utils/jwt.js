@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 const createTokenUser = (user) => {
-    
-    return tokenUser = {
+    const tokenUser = {
         userId: user.id,
         name: user.name
-    }
+    };
+    return tokenUser;
 }
 
 const createJWT = function (tokenUser) {
