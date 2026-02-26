@@ -4,6 +4,8 @@ const {NotFoundError, UnauthenticatedError, BadRequestError} = require('../error
 const {createJWT, createTokenUser, attachCookiesToRequest} = require('../utils/jwt');
 const {StatusCodes} = require('http-status-codes')
 
+const VALID_USER_ROLES = ['project_manager', 'technician'];
+
 // get all users
 const getAllUsers = async (req, res) => {
     
@@ -111,6 +113,56 @@ const registerUser = async (req, res) => {
 }
 
 // edit user
+const updateUserInfo = async (req, res) => {
+    const {name, email, role} = req.body;
+
+    if (!name || !email || !role) {
+        throw new BadRequestError('Missing Credentials. name, email and role are required.');
+    }
+
+    if (!VALID_USER_ROLES.includes(role)) {
+        throw new BadRequestError(`Invalid role. Must be one of: ${VALID_USER_ROLES.join(', ')}`);
+    }
+
+    const userId = req.user?.userId;
+
+    if (!userId) {
+        throw new UnauthenticatedError('Authentication Invalid');
+    }
+
+    const existingUser = await prisma.user.findUnique({
+        where: {
+            id: userId
+        }
+    })
+
+    if (!existingUser) {
+        throw new NotFoundError(`No user found with id ${userId}`);
+    }
+
+    const duplicateEmailUser = await prisma.user.findUnique({
+        where: {
+            email: email
+        }
+    })
+
+    if (duplicateEmailUser && duplicateEmailUser.id !== userId) {
+        throw new BadRequestError('Email already in use.');
+    }
+
+    const user = await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            name: name,
+            email: email,
+            role: role
+        }
+    })
+
+    res.status(StatusCodes.OK).json({user, msg: 'User info updated successfully.'});
+}
 
 // edit user password - need to rehash!
 
@@ -129,5 +181,6 @@ module.exports = {
     getSingleUser,
     registerUser,
     loginUser,
+    updateUserInfo,
     logout
 }

@@ -1,6 +1,6 @@
 const express = require('express');
 const {getAllProjects, getSingleProject, createProject, updateProject, deleteProject} = require('../controllers/projectsController');
-const {getAllUsers, getSingleUser, registerUser, loginUser, logout} = require('../controllers/userController');
+const {getAllUsers, getSingleUser, registerUser, loginUser, updateUserInfo, logout} = require('../controllers/userController');
 const {getSingleOrg, createOrg, getAllOrgs, updateOrg, deleteOrg} = require('../controllers/organizationController');
 const {getAllTasks, getSingleTask, createTask, updateTask, deleteTask} = require('../controllers/taskController');
 const authenticateUser = require('../middleware/authentication');
@@ -18,6 +18,7 @@ router.route('/tasks/:id').get(authenticateUser, getSingleTask).patch(authentica
 // users
 router.route('/users').get(authenticateUser, getAllUsers);
 router.route('/users/:id').get(authenticateUser, getSingleUser);
+router.route('/users/update-user').patch(authenticateUser, updateUserInfo);
 
 // organizations
 router.route('/organizations').post(authenticateUser, createOrg).get(authenticateUser, getAllOrgs);
