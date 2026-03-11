@@ -1,0 +1,73 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.000
+Technician: Hey John, can you hear me okay?
+
+00:00:04.500 --> 00:00:07.000
+Customer: Yep, loud and clear.
+
+00:00:07.500 --> 00:00:12.000
+Technician: Perfect. Today we're going to finish setting up the Verify server and connect it to your PostgreSQL database.
+
+00:00:12.500 --> 00:00:16.500
+Customer: Sounds good. I already have the server running on our internal VM.
+
+00:00:17.000 --> 00:00:22.000
+Technician: Great. First step is confirming the license server is active and reachable.
+
+00:00:22.500 --> 00:00:27.000
+Customer: Let me check... yeah the license service is running on port 8080.
+
+00:00:27.500 --> 00:00:32.000
+Technician: Perfect. I’m now connecting the Verify application to your PostgreSQL instance.
+
+00:00:32.500 --> 00:00:36.500
+Customer: Do you need the database credentials again?
+
+00:00:37.000 --> 00:00:41.000
+Technician: No that's okay, I saved them earlier. Connection test passed successfully.
+
+00:00:41.500 --> 00:00:46.000
+Technician: Next we’ll configure the API endpoint so the system can receive file submissions.
+
+00:00:46.500 --> 00:00:50.000
+Customer: Okay, what port will that run on?
+
+00:00:50.500 --> 00:00:55.000
+Technician: We’ll run the API on port 443 behind your firewall so it's secure.
+
+00:00:55.500 --> 00:00:59.500
+Customer: Perfect, our IT team already opened that port earlier today.
+
+00:01:00.000 --> 00:01:05.000
+Technician: Great. I’m deploying the service now and restarting the application.
+
+00:01:05.500 --> 00:01:09.500
+Technician: Okay everything is up and running.
+
+00:01:10.000 --> 00:01:14.000
+Customer: Awesome. What’s left to complete the setup?
+
+00:01:14.500 --> 00:01:18.500
+Technician: Just two things: verifying the API connection and sending a test file.
+
+00:01:19.000 --> 00:01:23.000
+Technician: I’m running the API health check now.
+
+00:01:23.500 --> 00:01:26.500
+Technician: And the API responded successfully.
+
+00:01:27.000 --> 00:01:31.000
+Customer: Nice, looks good on our side too.
+
+00:01:31.500 --> 00:01:36.000
+Technician: Great. I’ll mark the database connection, API configuration, and deployment tasks as complete.
+
+00:01:36.500 --> 00:01:40.000
+Technician: I'll also send you the implementation report after the call.
+
+00:01:40.500 --> 00:01:44.000
+Customer: Perfect, thanks for the help today.
+
+00:01:44.500 --> 00:01:48.000
+Technician: No problem at all. Talk soon.
