@@ -3,6 +3,7 @@ const {hashPassword, comparePassword} = require('../utils/hashPass');
 const {NotFoundError, UnauthenticatedError, BadRequestError} = require('../errors/customError');
 const {createJWT, createTokenUser, attachCookiesToRequest} = require('../utils/jwt');
 const {StatusCodes} = require('http-status-codes')
+const {z} = require('zod');
 
 const VALID_USER_ROLES = ['project_manager', 'technician'];
 
@@ -102,10 +103,19 @@ const registerUser = async (req, res) => {
         }
     })
     
-
     if(validateEmailUser) {
         throw new BadRequestError('There is already a user with that email.')
     }
+
+    // validate email syntax
+    const emailSchema = z.email();
+
+    try {
+        emailSchema.parse(email);
+    } catch (error) {
+        throw new BadRequestError('Invalid email syntax');
+    }
+
 
     // validate the org exists
     const validateOrg = await prisma.organization.findUnique({
