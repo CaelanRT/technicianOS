@@ -17,6 +17,7 @@ const tasksRouter = require('./routes/tasksRoutes');
 const usersRouter = require('./routes/usersRoutes');
 const organizationsRouter = require('./routes/organizationsRoutes');
 const authRouter = require('./routes/authRoutes');
+const webhookRouter = require('./routes/webhookRoutes');
 
 const port = process.env.PORT || 3000;
 
@@ -30,6 +31,7 @@ app.use('/api/v1', tasksRouter);
 app.use('/api/v1', usersRouter);
 app.use('/api/v1', organizationsRouter);
 app.use('/api/v1', authRouter);
+app.use('/api/v1', webhookRouter);
 
 // errors
 app.use(errorHandler);
