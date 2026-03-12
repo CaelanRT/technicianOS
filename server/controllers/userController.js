@@ -82,10 +82,40 @@ const loginUser = async (req, res) => {
 
 // register user
 const registerUser = async (req, res) => {
+ 
     const {name, email, password, role, organizationId} = req.body;
+
     if (!name || !email || !password || !role || !organizationId) {
-        
-        throw new BadRequestError('Missing Credentials.');
+        throw new BadRequestError('Missing parameters.');
+    }
+
+
+    // validate the passed in role is real
+    if(!VALID_USER_ROLES.includes(role)) {
+        throw new BadRequestError('Invalid role submitted');
+    }
+
+    // validate duplicate email
+    const validateEmailUser = await prisma.user.findUnique({
+        where: {
+            email: email
+        }
+    })
+    
+
+    if(validateEmailUser) {
+        throw new BadRequestError('There is already a user with that email.')
+    }
+
+    // validate the org exists
+    const validateOrg = await prisma.organization.findUnique({
+        where:{
+            id:organizationId
+        }
+    })
+
+    if(!validateOrg) {
+        throw new BadRequestError('Invalid orgId submitted');
     }
 
     const hashedPassword = await hashPassword(password);
