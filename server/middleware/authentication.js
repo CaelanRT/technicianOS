@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const {UnauthenticatedError} = require('../errors/customError');
+const {UnauthenticatedError, ForbiddenError} = require('../errors/customError');
 
 const authenticateUser = (req, res, next) => {
     const token = req.signedCookies.token;
@@ -12,7 +12,8 @@ const authenticateUser = (req, res, next) => {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
 
         req.user = {
-            userId: payload.userId
+            userId: payload.userId,
+            orgId: payload.orgId
         }
         next()
     } catch (error) {
@@ -20,4 +21,12 @@ const authenticateUser = (req, res, next) => {
     }
 }
 
-module.exports = authenticateUser;
+const authenticateTenant = (reqUser, resourceOrgID) => {
+
+    if (reqUser.orgId === resourceOrgID) return;
+    
+    throw new ForbiddenError('Access Denied');
+    
+}
+
+module.exports = {authenticateUser, authenticateTenant};

@@ -6,7 +6,7 @@ const {
     updateOrg,
     deleteOrg,
 } = require('../controllers/organizationController');
-const authenticateUser = require('../middleware/authentication');
+const {authenticateUser} = require('../middleware/authentication');
 
 const router = express.Router();
 

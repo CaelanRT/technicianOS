@@ -1,6 +1,7 @@
 const { prisma } = require('../db/db');
 const {BadRequestError, NotFoundError} = require('../errors/customError');
 const {StatusCodes} = require('http-status-codes');
+const {authenticateTenant} = require('../middleware/authentication');
 
 // get all Projects
 const getAllProjects = async (req, res) => {
@@ -36,6 +37,8 @@ const getSingleProject = async (req, res) => {
     if (!project) {
         throw new NotFoundError(`No Project with ID ${id}`);
     }
+
+    authenticateTenant(req.user, project.organizationId);
 
     res.status(StatusCodes.OK).json({project});
 }

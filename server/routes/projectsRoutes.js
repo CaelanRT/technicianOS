@@ -6,7 +6,7 @@ const {
     updateProject,
     deleteProject,
 } = require('../controllers/projectsController');
-const authenticateUser = require('../middleware/authentication');
+const {authenticateUser} = require('../middleware/authentication');
 
 const router = express.Router();
 

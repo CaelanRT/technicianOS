@@ -6,7 +6,7 @@ const {
     updateTask,
     deleteTask,
 } = require('../controllers/taskController');
-const authenticateUser = require('../middleware/authentication');
+const {authenticateUser} = require('../middleware/authentication');
 
 const router = express.Router();
 

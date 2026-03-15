@@ -28,10 +28,18 @@ class UnauthenticatedError extends CustomError {
     }
 }
 
+class ForbiddenError extends CustomError {
+    constructor(message) {
+        super(message);
+        this.statusCode = StatusCodes.FORBIDDEN;
+    }
+}
+
 module.exports = {
     NotFoundError,
     BadRequestError,
-    UnauthenticatedError
+    UnauthenticatedError,
+    ForbiddenError
 }
 
 
