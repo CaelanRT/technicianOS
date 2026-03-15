@@ -4,6 +4,7 @@ const {NotFoundError, UnauthenticatedError, BadRequestError} = require('../error
 const {createJWT, createTokenUser, attachCookiesToRequest} = require('../utils/jwt');
 const {StatusCodes} = require('http-status-codes')
 const {z} = require('zod');
+const {authenticateTenant} = require('../middleware/authentication');
 
 const VALID_USER_ROLES = ['project_manager', 'technician'];
 
@@ -42,6 +43,8 @@ const getSingleUser = async (req, res) => {
     if (!user) {
         throw new NotFoundError(`No user found with id ${id}`);
     }
+
+    authenticateTenant(req.user, user.organizationId);
 
     res.status(StatusCodes.OK).json({user});
 }
