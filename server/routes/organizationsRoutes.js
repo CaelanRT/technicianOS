@@ -1,6 +1,7 @@
 const express = require('express');
 const {
     getSingleOrg,
+    getOrgsForSignup,
     createOrg,
     getAllOrgs,
     updateOrg,
@@ -10,6 +11,7 @@ const {authenticateUser} = require('../middleware/authentication');
 
 const router = express.Router();
 
+router.get('/organizations/signup', getOrgsForSignup);
 router.route('/organizations').post(authenticateUser, createOrg).get(authenticateUser, getAllOrgs);
 router
     .route('/organizations/:id')

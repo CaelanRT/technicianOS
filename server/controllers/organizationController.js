@@ -29,6 +29,19 @@ const getSingleOrg = async (req, res) => {
     res.status(StatusCodes.OK).json({organization});
 }
 
+// get all orgs (for signup - no auth, returns id/name only)
+const getOrgsForSignup = async (req, res) => {
+    const orgs = await prisma.organization.findMany({
+        select: { id: true, name: true }
+    });
+
+    if (!orgs) {
+        throw new NotFoundError('No Orgs in DB.');
+    }
+
+    res.status(StatusCodes.OK).json({ orgs });
+};
+
 // get all orgs
 const getAllOrgs = async (req, res) => {
     const orgs = await prisma.organization.findMany();
@@ -117,6 +130,7 @@ const deleteOrg = async (req, res) => {
 //export
 module.exports = {
     getSingleOrg,
+    getOrgsForSignup,
     getAllOrgs,
     createOrg,
     updateOrg,

@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* Paper-inspired design: warm off-white, clean black text, minimal red accent */
+:root {
+  --paper-bg: #faf8f5;
+  --paper-surface: #ffffff;
+  --paper-text: #1a1a1a;
+  --paper-text-muted: #4a4a4a;
+  --paper-border: #e5e2dd;
+  --accent-red: #b91c1c;
+  --accent-red-hover: #991b1b;
+}
+
+body {
+  font-family: "Source Sans 3", system-ui, sans-serif;
+  background-color: var(--paper-bg);
+  color: var(--paper-text);
+}
+
+/* Navbar dropdown: Log out turns red on hover */
+.logout-menu-item {
+  color: var(--paper-text);
+}
+.logout-menu-item:hover {
+  color: var(--accent-red);
+}

@@ -8,6 +8,26 @@ const {authenticateTenant} = require('../middleware/authentication');
 
 const VALID_USER_ROLES = ['project_manager', 'technician'];
 
+// get current user (from JWT)
+const getCurrentUser = async (req, res) => {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+        throw new UnauthenticatedError('Authentication Invalid');
+    }
+
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+    });
+
+    if (!user) {
+        throw new NotFoundError('No user found');
+    }
+
+    const { password: _, ...safeUser } = user;
+    res.status(StatusCodes.OK).json({ user: safeUser });
+};
+
 // get all users
 const getAllUsers = async (req, res) => {
     
@@ -155,6 +175,52 @@ const registerUser = async (req, res) => {
     res.status(StatusCodes.CREATED).json({user, msg: 'User Registered Successfully.'});
 }
 
+// register user with new organization (for first-user signup when no orgs exist)
+const registerWithOrg = async (req, res) => {
+    const {name, email, password, role, organizationName} = req.body;
+
+    if (!name || !email || !password || !role || !organizationName) {
+        throw new BadRequestError('Missing parameters: name, email, password, role, organizationName.');
+    }
+
+    if (!VALID_USER_ROLES.includes(role)) {
+        throw new BadRequestError('Invalid role submitted');
+    }
+
+    const validateEmailUser = await prisma.user.findUnique({
+        where: { email },
+    });
+    if (validateEmailUser) {
+        throw new BadRequestError('There is already a user with that email.');
+    }
+
+    try {
+        z.email().parse(email);
+    } catch {
+        throw new BadRequestError('Invalid email syntax');
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    const organization = await prisma.organization.create({
+        data: { name: organizationName },
+    });
+
+    const user = await prisma.user.create({
+        data: {
+            name,
+            email,
+            password: hashedPassword,
+            role,
+            organizationId: organization.id,
+        },
+    });
+
+    const tokenUser = createTokenUser(user);
+    attachCookiesToRequest(res, tokenUser);
+    res.status(StatusCodes.CREATED).json({user, msg: 'User and organization created successfully.'});
+};
+
 // edit user
 const updateUserInfo = async (req, res) => {
     const {name, email, role} = req.body;
@@ -220,6 +286,8 @@ const logout = (req, res) => {
 }
 
 module.exports = {
+    getCurrentUser,
+    registerWithOrg,
     getAllUsers,
     getSingleUser,
     registerUser,
