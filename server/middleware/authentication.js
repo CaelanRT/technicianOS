@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const {UnauthenticatedError, ForbiddenError} = require('../errors/customError');
+const {UnauthenticatedError, ForbiddenError, BadRequestError} = require('../errors/customError');
+
 
 const authenticateUser = (req, res, next) => {
     const token = req.signedCookies.token;
@@ -29,4 +30,12 @@ const authenticateTenant = (reqUser, resourceOrgID) => {
     
 }
 
-module.exports = {authenticateUser, authenticateTenant};
+const authenticateProject = (reqUser, resourceOrgID) => {
+
+    // check 
+    if (reqUser.orgId === resourceOrgID) return;
+
+    throw new ForbiddenError('Access Denied');
+}
+
+module.exports = {authenticateUser, authenticateTenant, authenticateProject};

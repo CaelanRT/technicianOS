@@ -1,6 +1,7 @@
 const { prisma } = require('../db/db');
 const { BadRequestError, NotFoundError } = require('../errors/customError');
 const { StatusCodes } = require('http-status-codes');
+const {authenticateProject} = require('../middleware/authentication');
 
 const VALID_STATUSES = ['pending', 'in_progress', 'completed'];
 
@@ -33,11 +34,16 @@ const getSingleTask = async (req, res) => {
         where: {
             id: id,
         },
+        include: {
+            project: true
+        }
     });
 
     if (!task) {
         throw new NotFoundError(`No Task with ID ${id}`);
     }
+
+    authenticateProject(req.user, task.project.organizationId);
 
     res.status(StatusCodes.OK).json({ task });
 };
