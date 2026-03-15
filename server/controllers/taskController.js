@@ -75,6 +75,18 @@ const createTask = async (req, res) => {
         data.assignedToUserId = assignedToUserId;
     }
 
+    const project = await prisma.project.findUnique({
+        where:{
+            id: projectId
+        }
+    })
+
+    if(!project) {
+        throw new BadRequestError('No project with that ID');
+    }
+
+    authenticateProject(req.user, project.organizationId);
+
     const task = await prisma.task.create({
         data,
     });
@@ -113,6 +125,18 @@ const updateTask = async (req, res) => {
         throw new BadRequestError('Invalid ID. Please send an integer value.');
     }
 
+    const project = await prisma.project.findUnique({
+        where:{
+            id: projectId
+        }
+    })
+
+    if(!project) {
+        throw new BadRequestError('No project with that ID');
+    }
+
+    authenticateProject(req.user, project.organizationId);
+
     const task = await prisma.task.update({
         where: {
             id: id,
@@ -141,6 +165,21 @@ const deleteTask = async (req, res) => {
 
     if (Number.isNaN(id)) {
         throw new BadRequestError('Invalid ID. Please send an integer value.');
+    }
+
+    const findTask = await prisma.task.findUnique({
+        where: {
+            id: id
+        },
+        include: {
+            project: true
+        }
+    })
+
+    authenticateProject(req.user, findTask.project.organizationId);
+
+    if(!findTask) {
+        throw new BadRequestError('No task with that ID');
     }
 
     const task = await prisma.task.delete({
