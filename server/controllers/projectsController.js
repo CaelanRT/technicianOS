@@ -14,6 +14,57 @@ const getAllProjects = async (req, res) => {
     res.status(StatusCodes.OK).json({projects});
 }
 
+const getAssignedProjects = async (req, res) => {
+
+    const {userId, orgId, role} = req.user;
+
+    if (!userId || !orgId || !role) {
+        throw new BadRequestError('Missing arguments');
+    }
+
+    if(role === 'project_manager') {
+        // fetch stuff
+        const projects = await prisma.project.findMany({
+            where: {
+                projectManagerId: userId,
+                organizationId: orgId
+            },
+            include:{
+                tasks: true
+            }
+        })
+
+        // make sure there are projects else throw
+        if (!projects) {
+            throw new NotFoundError('No projects yet.')
+        }
+        // return the projects
+        res.status(StatusCodes.OK).json({projects});
+    }
+
+    // same for technician
+    if(role === 'technician') {
+        // fetch stuff
+        const projects = await prisma.project.findMany({
+            where: {
+                projectManagerId: userId,
+                organizationId: orgId
+            },
+            include:{
+                tasks: true
+            }
+        })
+
+        // make sure there are projects else throw
+        if (!projects) {
+            throw new NotFoundError('No projects yet.')
+        }
+        // return the projects
+        res.status(StatusCodes.OK).json({projects});
+    }
+    
+}
+
 // get single project
 const getSingleProject = async (req, res) => {
     let id = req.params.id;
@@ -146,5 +197,6 @@ module.exports = {
     getSingleProject,
     createProject,
     updateProject,
-    deleteProject
+    deleteProject,
+    getAssignedProjects
 }

@@ -14,7 +14,8 @@ const authenticateUser = (req, res, next) => {
 
         req.user = {
             userId: payload.userId,
-            orgId: payload.orgId
+            orgId: payload.orgId,
+            role: payload.role
         }
         next()
     } catch (error) {

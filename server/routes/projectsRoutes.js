@@ -5,12 +5,14 @@ const {
     createProject,
     updateProject,
     deleteProject,
+    getAssignedProjects
 } = require('../controllers/projectsController');
 const {authenticateUser} = require('../middleware/authentication');
 
 const router = express.Router();
 
 router.route('/projects').get(authenticateUser, getAllProjects).post(authenticateUser, createProject);
+router.route('/assignedProjects').get(authenticateUser, getAssignedProjects);
 router
     .route('/projects/:id')
     .get(authenticateUser, getSingleProject)

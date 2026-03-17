@@ -4,7 +4,8 @@ const createTokenUser = (user) => {
     const tokenUser = {
         userId: user.id,
         name: user.name,
-        orgId: user.organizationId
+        orgId: user.organizationId,
+        role: user.role
     };
     return tokenUser;
 }
