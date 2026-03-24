@@ -23,7 +23,8 @@ const getAssignedProjects = async (req, res) => {
     }
 
     if(role === 'project_manager') {
-        // fetch stuff
+        
+
         const projects = await prisma.project.findMany({
             where: {
                 projectManagerId: userId,
@@ -44,10 +45,11 @@ const getAssignedProjects = async (req, res) => {
 
     // same for technician
     if(role === 'technician') {
+        
         // fetch stuff
         const projects = await prisma.project.findMany({
             where: {
-                projectManagerId: userId,
+                technicianId: userId,
                 organizationId: orgId
             },
             include:{
