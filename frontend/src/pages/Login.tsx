@@ -1,5 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 function Login() {
@@ -9,6 +9,14 @@ function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { user, login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const successMessage =
+    typeof location.state === 'object' &&
+    location.state !== null &&
+    'message' in location.state &&
+    typeof location.state.message === 'string'
+      ? location.state.message
+      : ''
 
   useEffect(() => {
     if (user) {
@@ -34,6 +42,18 @@ function Login() {
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--paper-bg)' }}>
       <div className="w-full max-w-sm rounded-lg border p-6 shadow-sm" style={{ backgroundColor: 'var(--paper-surface)', borderColor: 'var(--paper-border)' }}>
         <h2 className="text-xl font-semibold mb-4 text-center" style={{ color: 'var(--paper-text)' }}>Sign in</h2>
+        {successMessage && (
+          <p
+            className="mb-4 rounded-md border px-3 py-2 text-sm"
+            style={{
+              color: 'var(--paper-text)',
+              borderColor: 'var(--paper-border)',
+              backgroundColor: 'var(--paper-bg)',
+            }}
+          >
+            {successMessage}
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label htmlFor="email" className="block text-sm mb-1 font-medium" style={{ color: 'var(--paper-text-muted)' }}>
@@ -86,6 +106,22 @@ function Login() {
             {isSubmitting ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
+        <div className="mt-4 border-t pt-4 text-center" style={{ borderColor: 'var(--paper-border)' }}>
+          <p className="text-sm mb-3" style={{ color: 'var(--paper-text-muted)' }}>
+            Need an account?
+          </p>
+          <Link
+            to="/register"
+            className="inline-flex w-full items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors hover:bg-black/5"
+            style={{
+              borderColor: 'var(--paper-border)',
+              color: 'var(--paper-text)',
+              backgroundColor: 'var(--paper-bg)',
+            }}
+          >
+            Register
+          </Link>
+        </div>
       </div>
     </div>
   )

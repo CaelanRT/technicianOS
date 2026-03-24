@@ -22,6 +22,13 @@ interface AuthContextValue {
   user: User | null
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
+  register: (payload: {
+    name: string
+    email: string
+    password: string
+    role: 'project_manager' | 'technician'
+    organizationId: number
+  }) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -54,6 +61,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(data.user)
   }, [])
 
+  const register = useCallback(
+    async (payload: {
+      name: string
+      email: string
+      password: string
+      role: 'project_manager' | 'technician'
+      organizationId: number
+    }) => {
+      const data = await request<{ user: User }>('/register', {
+        method: 'POST',
+        body: payload,
+      })
+      setUser(data.user)
+    },
+    [],
+  )
+
   const logout = useCallback(async () => {
     try {
       await request('/logout', { method: 'POST' })
@@ -63,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   )
